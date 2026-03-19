@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { stages } from '../data/seedJobs'
 import { jobActions, selectors } from '../store/jobStore'
@@ -9,14 +9,57 @@ const formatDate = (value) =>
     new Date(value),
   )
 
+function ContactInfoForm({ job, onSave }) {
+  const [contactForm, setContactForm] = useState({
+    recruiter: job.recruiter ?? '',
+    contactEmail: job.contactEmail ?? '',
+  })
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    onSave(contactForm)
+  }
+
+  return (
+    <form className="note-form" onSubmit={handleSubmit}>
+      <label>
+        Recruiter
+        <input
+          value={contactForm.recruiter}
+          onChange={(event) =>
+            setContactForm((current) => ({
+              ...current,
+              recruiter: event.target.value,
+            }))
+          }
+          placeholder="Recruiter name"
+        />
+      </label>
+      <label>
+        Contact email
+        <input
+          type="email"
+          value={contactForm.contactEmail}
+          onChange={(event) =>
+            setContactForm((current) => ({
+              ...current,
+              contactEmail: event.target.value,
+            }))
+          }
+          placeholder="recruiter@company.com"
+        />
+      </label>
+      <button className="primary-button" type="submit">
+        Save contact info
+      </button>
+    </form>
+  )
+}
+
 export function ApplicationDetails() {
   const dispatch = useDispatch()
   const selectedJob = useSelector(selectors.selectedJob)
   const [note, setNote] = useState('')
-  const [contactForm, setContactForm] = useState({
-    recruiter: '',
-    contactEmail: '',
-  })
 
   if (!selectedJob) {
     return (
@@ -25,13 +68,6 @@ export function ApplicationDetails() {
       </SectionCard>
     )
   }
-
-  useEffect(() => {
-    setContactForm({
-      recruiter: selectedJob.recruiter ?? '',
-      contactEmail: selectedJob.contactEmail ?? '',
-    })
-  }, [selectedJob])
 
   const handleAddNote = (event) => {
     event.preventDefault()
@@ -45,13 +81,11 @@ export function ApplicationDetails() {
     setNote('')
   }
 
-  const handleMetaSubmit = (event) => {
-    event.preventDefault()
-
+  const handleMetaSubmit = (payload) => {
     dispatch(
       jobActions.updateJobMeta(selectedJob.id, {
-        recruiter: contactForm.recruiter,
-        contactEmail: contactForm.contactEmail,
+        recruiter: payload.recruiter,
+        contactEmail: payload.contactEmail,
       }),
     )
   }
@@ -152,38 +186,11 @@ export function ApplicationDetails() {
         <div className="details-grid__column">
           <div className="details-panel">
             <h3>Recruiter and contact</h3>
-            <form className="note-form" onSubmit={handleMetaSubmit}>
-              <label>
-                Recruiter
-                <input
-                  value={contactForm.recruiter}
-                  onChange={(event) =>
-                    setContactForm((current) => ({
-                      ...current,
-                      recruiter: event.target.value,
-                    }))
-                  }
-                  placeholder="Recruiter name"
-                />
-              </label>
-              <label>
-                Contact email
-                <input
-                  type="email"
-                  value={contactForm.contactEmail}
-                  onChange={(event) =>
-                    setContactForm((current) => ({
-                      ...current,
-                      contactEmail: event.target.value,
-                    }))
-                  }
-                  placeholder="recruiter@company.com"
-                />
-              </label>
-              <button className="primary-button" type="submit">
-                Save contact info
-              </button>
-            </form>
+            <ContactInfoForm
+              key={selectedJob.id}
+              job={selectedJob}
+              onSave={handleMetaSubmit}
+            />
           </div>
 
           <div className="details-panel">
