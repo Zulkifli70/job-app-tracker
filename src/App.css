@@ -285,6 +285,19 @@
   border-radius: 20px;
   background: linear-gradient(180deg, #fefeff, #eef3fb);
   border: 1px solid rgba(67, 86, 129, 0.1);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.pipeline-card:hover,
+.pipeline-card:focus-within {
+  transform: translateY(-3px);
+  border-color: rgba(52, 93, 159, 0.28);
+  background: linear-gradient(180deg, #ffffff, #e6eefb);
+  box-shadow: 0 16px 28px rgba(32, 50, 77, 0.12);
 }
 
 .pipeline-card__main {
@@ -294,6 +307,12 @@
   background: transparent;
   text-align: left;
   cursor: pointer;
+}
+
+.pipeline-card__main:focus-visible {
+  outline: 2px solid #345d9f;
+  outline-offset: 6px;
+  border-radius: 12px;
 }
 
 .pipeline-card h3 {
@@ -383,22 +402,11 @@
   color: #11213d;
 }
 
-.chip-list,
 .notes-list,
 .timeline-list {
   display: grid;
   gap: 12px;
   margin-top: 14px;
-}
-
-.document-chip {
-  display: inline-flex;
-  width: fit-content;
-  padding: 10px 12px;
-  border-radius: 999px;
-  background: #dce8fb;
-  color: #1e3050;
-  font-weight: 700;
 }
 
 .timeline-item,

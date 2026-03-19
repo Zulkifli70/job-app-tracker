@@ -3,16 +3,29 @@ import { stages } from '../data/seedJobs'
 import { jobActions, selectors } from '../store/jobStore'
 import { SectionCard } from './SectionCard'
 
+const scrollToApplicationDetails = () => {
+  window.requestAnimationFrame(() => {
+    document.getElementById('application-details')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  })
+}
+
 function PipelineCard({ job }) {
   const dispatch = useDispatch()
   const currentStageIndex = stages.indexOf(job.stage)
+  const handleSelectJob = () => {
+    dispatch(jobActions.selectJob(job.id))
+    scrollToApplicationDetails()
+  }
 
   return (
     <article className="pipeline-card">
       <button
         type="button"
         className="pipeline-card__main"
-        onClick={() => dispatch(jobActions.selectJob(job.id))}
+        onClick={handleSelectJob}
       >
         <strong>{job.company}</strong>
         <h3>{job.role}</h3>

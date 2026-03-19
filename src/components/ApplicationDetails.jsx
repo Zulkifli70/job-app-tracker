@@ -63,7 +63,7 @@ export function ApplicationDetails() {
 
   if (!selectedJob) {
     return (
-      <SectionCard title="Application details" eyebrow="Focus view">
+      <SectionCard id="application-details" title="Application details" eyebrow="Focus view">
         <p className="empty-state">Select a role to inspect the full application record.</p>
       </SectionCard>
     )
@@ -96,6 +96,7 @@ export function ApplicationDetails() {
 
   return (
     <SectionCard
+      id="application-details"
       title="Application details"
       eyebrow="Deep dive"
       action={
@@ -136,10 +137,6 @@ export function ApplicationDetails() {
 
           <div className="detail-stats">
             <div>
-              <span>Compensation</span>
-              <strong>{selectedJob.salary}</strong>
-            </div>
-            <div>
               <span>Applied</span>
               <strong>{selectedJob.appliedOn ? formatDate(selectedJob.appliedOn) : 'Not yet'}</strong>
             </div>
@@ -155,21 +152,6 @@ export function ApplicationDetails() {
         </div>
 
         <div className="details-grid__column">
-          <div className="details-panel">
-            <h3>Documents</h3>
-            <div className="chip-list">
-              {selectedJob.documents.length ? (
-                selectedJob.documents.map((document) => (
-                  <span key={document.id} className="document-chip">
-                    {document.type}: {document.label}
-                  </span>
-                ))
-              ) : (
-                <p className="empty-state">No documents attached.</p>
-              )}
-            </div>
-          </div>
-
           <div className="details-panel">
             <h3>Timeline</h3>
             <div className="timeline-list">
@@ -200,7 +182,7 @@ export function ApplicationDetails() {
                 rows="4"
                 value={note}
                 onChange={(event) => setNote(event.target.value)}
-                placeholder="Capture prep notes, follow-ups, or compensation questions."
+                placeholder="Capture prep notes, interview follow-ups, or action items."
               />
               <button className="primary-button" type="submit">
                 Add note
