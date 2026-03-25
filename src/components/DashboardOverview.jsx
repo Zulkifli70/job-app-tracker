@@ -1,63 +1,65 @@
-import { useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { stages } from '../data/seedJobs'
-import { jobActions, selectors } from '../store/jobStore'
-import { MetricCard } from './MetricCard'
-import { SectionCard } from './SectionCard'
+import { useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { stages } from "../data/seedJobs";
+import { jobActions, selectors } from "../store/jobStore";
+import { MetricCard } from "./MetricCard";
+import { SectionCard } from "./SectionCard";
 
 const formatInterviewDate = (value) =>
-  new Intl.DateTimeFormat('en', {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  }).format(new Date(value))
+  new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(value));
 
 export function DashboardOverview() {
-  const dispatch = useDispatch()
-  const jobs = useSelector(selectors.jobs)
+  const dispatch = useDispatch();
+  const jobs = useSelector(selectors.jobs);
   const [formData, setFormData] = useState({
-    company: '',
-    role: '',
-    location: '',
-    salary: '',
-    recruiter: '',
-    contactEmail: '',
-    stage: 'Saved',
-    summary: '',
-  })
+    company: "",
+    role: "",
+    location: "",
+    salary: "",
+    recruiter: "",
+    contactEmail: "",
+    stage: "Saved",
+    summary: "",
+  });
 
   const metrics = useMemo(() => {
-    const interviewCount = jobs.filter((job) => job.stage === 'Interview').length
-    const offerCount = jobs.filter((job) => job.stage === 'Offer').length
-    const activeCount = jobs.filter((job) => job.stage !== 'Rejected').length
+    const interviewCount = jobs.filter(
+      (job) => job.stage === "Interview",
+    ).length;
+    const offerCount = jobs.filter((job) => job.stage === "Offer").length;
+    const activeCount = jobs.filter((job) => job.stage !== "Rejected").length;
 
     return [
       {
-        label: 'Total applications',
+        label: "Total applications",
         value: jobs.length,
         detail: `${activeCount} still active in your search`,
-        tone: 'default',
+        tone: "default",
       },
       {
-        label: 'Interviews scheduled',
+        label: "Interviews scheduled",
         value: interviewCount,
-        detail: 'Roles currently in live interview loops',
-        tone: 'highlight',
+        detail: "Roles currently in live interview loops",
+        tone: "highlight",
       },
       {
-        label: 'Offers received',
+        label: "Offers received",
         value: offerCount,
-        detail: 'Opportunities ready for decision-making',
-        tone: 'success',
+        detail: "Opportunities ready for decision-making",
+        tone: "success",
       },
-    ]
-  }, [jobs])
+    ];
+  }, [jobs]);
 
   const upcomingInterviews = [...jobs]
     .filter((job) => job.nextInterview)
     .sort((a, b) => new Date(a.nextInterview) - new Date(b.nextInterview))
-    .slice(0, 3)
+    .slice(0, 3);
 
   const recentActivity = [...jobs]
     .flatMap((job) =>
@@ -68,13 +70,13 @@ export function DashboardOverview() {
       })),
     )
     .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 5)
+    .slice(0, 5);
 
   const handleSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
     if (!formData.company.trim() || !formData.role.trim()) {
-      return
+      return;
     }
 
     dispatch(
@@ -82,24 +84,25 @@ export function DashboardOverview() {
         ...formData,
         company: formData.company.trim(),
         role: formData.role.trim(),
-        location: formData.location.trim() || 'Not specified',
-        salary: formData.salary.trim() || 'Not specified',
+        location: formData.location.trim() || "Not specified",
+        salary: formData.salary.trim() || "Not specified",
         summary:
-          formData.summary.trim() || 'New opportunity added to your search pipeline.',
+          formData.summary.trim() ||
+          "New opportunity added to your search pipeline.",
       }),
-    )
+    );
 
     setFormData({
-      company: '',
-      role: '',
-      location: '',
-      salary: '',
-      recruiter: '',
-      contactEmail: '',
-      stage: 'Saved',
-      summary: '',
-    })
-  }
+      company: "",
+      role: "",
+      location: "",
+      salary: "",
+      recruiter: "",
+      contactEmail: "",
+      stage: "Saved",
+      summary: "",
+    });
+  };
 
   return (
     <div className="dashboard-grid">
@@ -161,7 +164,9 @@ export function DashboardOverview() {
               </div>
             ))
           ) : (
-            <p className="empty-state">No activity yet. Add your first application to begin tracking.</p>
+            <p className="empty-state">
+              No activity yet. Add your first application to begin tracking.
+            </p>
           )}
         </div>
       </SectionCard>
@@ -177,9 +182,12 @@ export function DashboardOverview() {
             <input
               value={formData.company}
               onChange={(event) =>
-                setFormData((current) => ({ ...current, company: event.target.value }))
+                setFormData((current) => ({
+                  ...current,
+                  company: event.target.value,
+                }))
               }
-              placeholder="Northwind"
+              placeholder="Google"
             />
           </label>
           <label>
@@ -187,7 +195,10 @@ export function DashboardOverview() {
             <input
               value={formData.role}
               onChange={(event) =>
-                setFormData((current) => ({ ...current, role: event.target.value }))
+                setFormData((current) => ({
+                  ...current,
+                  role: event.target.value,
+                }))
               }
               placeholder="Product Manager"
             />
@@ -197,9 +208,12 @@ export function DashboardOverview() {
             <input
               value={formData.location}
               onChange={(event) =>
-                setFormData((current) => ({ ...current, location: event.target.value }))
+                setFormData((current) => ({
+                  ...current,
+                  location: event.target.value,
+                }))
               }
-              placeholder="Remote"
+              placeholder="On Site / Remote"
             />
           </label>
           <label>
@@ -207,7 +221,10 @@ export function DashboardOverview() {
             <input
               value={formData.salary}
               onChange={(event) =>
-                setFormData((current) => ({ ...current, salary: event.target.value }))
+                setFormData((current) => ({
+                  ...current,
+                  salary: event.target.value,
+                }))
               }
               placeholder="$90k - $120k"
             />
@@ -217,9 +234,12 @@ export function DashboardOverview() {
             <input
               value={formData.recruiter}
               onChange={(event) =>
-                setFormData((current) => ({ ...current, recruiter: event.target.value }))
+                setFormData((current) => ({
+                  ...current,
+                  recruiter: event.target.value,
+                }))
               }
-              placeholder="Alyssa Wong"
+              placeholder="Mrs / Mr Scott"
             />
           </label>
           <label>
@@ -228,7 +248,10 @@ export function DashboardOverview() {
               type="email"
               value={formData.contactEmail}
               onChange={(event) =>
-                setFormData((current) => ({ ...current, contactEmail: event.target.value }))
+                setFormData((current) => ({
+                  ...current,
+                  contactEmail: event.target.value,
+                }))
               }
               placeholder="recruiter@company.com"
             />
@@ -238,7 +261,10 @@ export function DashboardOverview() {
             <select
               value={formData.stage}
               onChange={(event) =>
-                setFormData((current) => ({ ...current, stage: event.target.value }))
+                setFormData((current) => ({
+                  ...current,
+                  stage: event.target.value,
+                }))
               }
             >
               {stages.map((stage) => (
@@ -249,12 +275,15 @@ export function DashboardOverview() {
             </select>
           </label>
           <label className="quick-form__full">
-            Summary
+            Notes
             <textarea
               rows="3"
               value={formData.summary}
               onChange={(event) =>
-                setFormData((current) => ({ ...current, summary: event.target.value }))
+                setFormData((current) => ({
+                  ...current,
+                  summary: event.target.value,
+                }))
               }
               placeholder="What makes this role worth tracking?"
             />
@@ -265,5 +294,5 @@ export function DashboardOverview() {
         </form>
       </SectionCard>
     </div>
-  )
+  );
 }
