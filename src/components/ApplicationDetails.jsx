@@ -9,6 +9,8 @@ const formatDate = (value) =>
     new Date(value),
   )
 
+const getStageClassName = (stage) => `status-pill--${stage.toLowerCase().replace(/\s+/g, '-')}`
+
 function ContactInfoForm({ job, onSave }) {
   const [contactForm, setContactForm] = useState({
     recruiter: job.recruiter ?? '',
@@ -101,7 +103,7 @@ export function ApplicationDetails() {
       eyebrow="Details"
       action={
         <div className="details-actions">
-          <span className={`status-pill status-pill--${selectedJob.stage.toLowerCase()}`}>
+          <span className={`status-pill ${getStageClassName(selectedJob.stage)}`}>
             {selectedJob.stage}
           </span>
           <button type="button" className="danger-button" onClick={handleDeleteJob}>

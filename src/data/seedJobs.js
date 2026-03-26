@@ -1,9 +1,12 @@
 export const stages = [
-  'Saved',
+  'Wishlist',
   'Applied',
-  'Interview',
+  'HR Screening',
+  'Technical Interview',
+  'Final Interview',
   'Offer',
   'Rejected',
+  'Ghosted',
 ]
 
 export const seedJobs = []

@@ -5,6 +5,8 @@ import { jobActions, selectors } from "../store/jobStore";
 import { MetricCard } from "./MetricCard";
 import { SectionCard } from "./SectionCard";
 
+const interviewStages = ["HR Screening", "Technical Interview", "Final Interview"];
+
 const formatInterviewDate = (value) =>
   new Intl.DateTimeFormat("en", {
     month: "short",
@@ -23,16 +25,18 @@ export function DashboardOverview() {
     salary: "",
     recruiter: "",
     contactEmail: "",
-    stage: "Saved",
+    stage: "Wishlist",
     summary: "",
   });
 
   const metrics = useMemo(() => {
     const interviewCount = jobs.filter(
-      (job) => job.stage === "Interview",
+      (job) => interviewStages.includes(job.stage),
     ).length;
     const offerCount = jobs.filter((job) => job.stage === "Offer").length;
-    const activeCount = jobs.filter((job) => job.stage !== "Rejected").length;
+    const activeCount = jobs.filter(
+      (job) => !["Rejected", "Ghosted"].includes(job.stage),
+    ).length;
 
     return [
       {
@@ -99,7 +103,7 @@ export function DashboardOverview() {
       salary: "",
       recruiter: "",
       contactEmail: "",
-      stage: "Saved",
+      stage: "Wishlist",
       summary: "",
     });
   };

@@ -17,6 +17,26 @@ const buildInitialState = () => ({
   selectedJobId: seedJobs[0]?.id ?? null,
 });
 
+const legacyStageMap = {
+  Saved: "Wishlist",
+  Interview: "Technical Interview",
+};
+
+const normalizeStage = (stage) => {
+  const mappedStage = legacyStageMap[stage] ?? stage;
+  return stages.includes(mappedStage) ? mappedStage : "Wishlist";
+};
+
+const normalizeJob = (job) => ({
+  ...job,
+  stage: normalizeStage(job.stage),
+  recruiter: job.recruiter ?? "Pending",
+  contactEmail: job.contactEmail ?? "",
+  notes: job.notes ?? [],
+  documents: job.documents ?? [],
+  timeline: job.timeline ?? [],
+});
+
 const readStoredState = () => {
   if (typeof window === "undefined") {
     return buildInitialState();
@@ -33,6 +53,7 @@ const readStoredState = () => {
     return {
       ...buildInitialState(),
       ...parsedState,
+      jobs: (parsedState.jobs ?? buildInitialState().jobs).map(normalizeJob),
     };
   } catch {
     return buildInitialState();
@@ -198,14 +219,15 @@ const reducer = (state, action) => {
       } = action.payload;
       const id = createId("job");
       const today = new Date().toISOString().slice(0, 10);
+      const normalizedStage = normalizeStage(stage);
       const newJob = {
         id,
         company,
         role,
         location,
         salary,
-        stage,
-        appliedOn: stage === "Saved" ? "" : today,
+        stage: normalizedStage,
+        appliedOn: normalizedStage === "Wishlist" ? "" : today,
         nextInterview: "",
         recruiter: recruiter.trim() || "Pending",
         contactEmail: contactEmail.trim(),
@@ -218,8 +240,8 @@ const reducer = (state, action) => {
             id: createId("event"),
             date: today,
             label:
-              stage === "Saved"
-                ? "Saved role to pipeline"
+              normalizedStage === "Wishlist"
+                ? "Saved role to wishlist"
                 : "Added application",
           },
         ],
