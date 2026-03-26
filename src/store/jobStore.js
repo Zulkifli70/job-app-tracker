@@ -118,7 +118,7 @@ const reducer = (state, action) => {
               ...job,
               stage,
             },
-            `Stage updated to ${stage}`,
+            `Moved to ${stage}`,
             new Date().toISOString().slice(0, 10),
           );
         }),
@@ -139,6 +139,14 @@ const reducer = (state, action) => {
             ...job,
             recruiter: recruiter.trim() || "Pending",
             contactEmail: contactEmail.trim(),
+            timeline: [
+              {
+                id: createId("event"),
+                date: new Date().toISOString().slice(0, 10),
+                label: "Updated contact information",
+              },
+              ...job.timeline,
+            ],
           };
         }),
       };
@@ -168,7 +176,7 @@ const reducer = (state, action) => {
               {
                 id: createId("event"),
                 date: new Date().toISOString().slice(0, 10),
-                label: "Added a note",
+                label: "Added note",
               },
               ...job.timeline,
             ],

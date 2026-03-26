@@ -36,7 +36,7 @@ function ContactInfoForm({ job, onSave }) {
         />
       </label>
       <label>
-        Contact email
+        Contact Email
         <input
           type="email"
           value={contactForm.contactEmail}
@@ -50,7 +50,7 @@ function ContactInfoForm({ job, onSave }) {
         />
       </label>
       <button className="primary-button" type="submit">
-        Save contact info
+        Save Contact Information
       </button>
     </form>
   )
@@ -63,8 +63,8 @@ export function ApplicationDetails() {
 
   if (!selectedJob) {
     return (
-      <SectionCard id="application-details" title="Application details" eyebrow="Focus view">
-        <p className="empty-state">Select a role to inspect the full application record.</p>
+      <SectionCard id="application-details" title="Application Details" eyebrow="Details">
+        <p className="empty-state">Select an application to view its full record.</p>
       </SectionCard>
     )
   }
@@ -97,15 +97,15 @@ export function ApplicationDetails() {
   return (
     <SectionCard
       id="application-details"
-      title="Application details"
-      eyebrow="Deep dive"
+      title="Application Details"
+      eyebrow="Details"
       action={
         <div className="details-actions">
           <span className={`status-pill status-pill--${selectedJob.stage.toLowerCase()}`}>
             {selectedJob.stage}
           </span>
           <button type="button" className="danger-button" onClick={handleDeleteJob}>
-            Delete job
+            Delete Application
           </button>
         </div>
       }
@@ -167,7 +167,7 @@ export function ApplicationDetails() {
 
         <div className="details-grid__column">
           <div className="details-panel">
-            <h3>Recruiter and contact</h3>
+            <h3>Recruiter Information</h3>
             <ContactInfoForm
               key={selectedJob.id}
               job={selectedJob}
@@ -182,10 +182,10 @@ export function ApplicationDetails() {
                 rows="4"
                 value={note}
                 onChange={(event) => setNote(event.target.value)}
-                placeholder="Capture prep notes, interview follow-ups, or action items."
+                placeholder="Record interview preparation notes, follow-up actions, or important context."
               />
               <button className="primary-button" type="submit">
-                Add note
+                Add Note
               </button>
             </form>
             <div className="notes-list">
@@ -197,7 +197,7 @@ export function ApplicationDetails() {
                   </article>
                 ))
               ) : (
-                <p className="empty-state">No notes yet for this application.</p>
+                <p className="empty-state">No notes have been added to this application yet.</p>
               )}
             </div>
           </div>

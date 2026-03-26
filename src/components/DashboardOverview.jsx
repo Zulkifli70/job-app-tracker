@@ -38,19 +38,19 @@ export function DashboardOverview() {
       {
         label: "Total applications",
         value: jobs.length,
-        detail: `${activeCount} still active in your search`,
+        detail: `${activeCount} currently active in your search`,
         tone: "default",
       },
       {
-        label: "Interviews scheduled",
+        label: "Scheduled interviews",
         value: interviewCount,
-        detail: "Roles currently in live interview loops",
+        detail: "Applications currently in interview stages",
         tone: "highlight",
       },
       {
         label: "Offers received",
         value: offerCount,
-        detail: "Opportunities ready for decision-making",
+        detail: "Opportunities awaiting evaluation or response",
         tone: "success",
       },
     ];
@@ -88,7 +88,7 @@ export function DashboardOverview() {
         salary: formData.salary.trim() || "Not specified",
         summary:
           formData.summary.trim() ||
-          "New opportunity added to your search pipeline.",
+          "A new opportunity has been added to your application pipeline.",
       }),
     );
 
@@ -119,8 +119,8 @@ export function DashboardOverview() {
       </SectionCard>
 
       <SectionCard
-        title="Upcoming interviews"
-        eyebrow="Next steps"
+        title="Upcoming Interviews"
+        eyebrow="Schedule"
         className="dashboard-grid__interviews"
       >
         <div className="stack-list">
@@ -140,14 +140,16 @@ export function DashboardOverview() {
               </button>
             ))
           ) : (
-            <p className="empty-state">No interviews scheduled yet.</p>
+            <p className="empty-state">
+              No interviews have been scheduled yet.
+            </p>
           )}
         </div>
       </SectionCard>
 
       <SectionCard
-        title="Recent activity"
-        eyebrow="Momentum"
+        title="Recent Activity"
+        eyebrow="Recent Updates"
         className="dashboard-grid__activity"
       >
         <div className="stack-list">
@@ -165,15 +167,16 @@ export function DashboardOverview() {
             ))
           ) : (
             <p className="empty-state">
-              No activity yet. Add your first application to begin tracking.
+              No activity has been recorded yet. Add your first application to
+              begin tracking your progress.
             </p>
           )}
         </div>
       </SectionCard>
 
       <SectionCard
-        title="Add application"
-        eyebrow="Quick capture"
+        title="Add New Application"
+        eyebrow="New Entry"
         className="dashboard-grid__form"
       >
         <form className="quick-form" onSubmit={handleSubmit}>
@@ -187,7 +190,7 @@ export function DashboardOverview() {
                   company: event.target.value,
                 }))
               }
-              placeholder="Google"
+              placeholder="e.g. Google"
             />
           </label>
           <label>
@@ -200,7 +203,7 @@ export function DashboardOverview() {
                   role: event.target.value,
                 }))
               }
-              placeholder="Product Manager"
+              placeholder="e.g. Product Manager"
             />
           </label>
           <label>
@@ -213,7 +216,7 @@ export function DashboardOverview() {
                   location: event.target.value,
                 }))
               }
-              placeholder="On Site / Remote"
+              placeholder="e.g. Jakarta, Indonesia / Remote"
             />
           </label>
           <label>
@@ -226,7 +229,7 @@ export function DashboardOverview() {
                   salary: event.target.value,
                 }))
               }
-              placeholder="$90k - $120k"
+              placeholder="e.g. IDR 8,000,000 - 12,000,000"
             />
           </label>
           <label>
@@ -239,11 +242,11 @@ export function DashboardOverview() {
                   recruiter: event.target.value,
                 }))
               }
-              placeholder="Mrs / Mr Scott"
+              placeholder="e.g. Sarah Chen"
             />
           </label>
           <label>
-            Contact email
+            Contact Email
             <input
               type="email"
               value={formData.contactEmail}
@@ -253,7 +256,7 @@ export function DashboardOverview() {
                   contactEmail: event.target.value,
                 }))
               }
-              placeholder="recruiter@company.com"
+              placeholder="e.g. recruiter@company.com"
             />
           </label>
           <label>
@@ -285,11 +288,11 @@ export function DashboardOverview() {
                   summary: event.target.value,
                 }))
               }
-              placeholder="What makes this role worth tracking?"
+              placeholder="Add context, role highlights, or follow-up notes."
             />
           </label>
           <button className="primary-button quick-form__submit" type="submit">
-            Save to tracker
+            Save Application
           </button>
         </form>
       </SectionCard>
