@@ -1,10 +1,36 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { stages } from "../data/seedJobs";
 import { jobActions, selectors } from "../store/jobStore";
 import { SectionCard } from "./SectionCard";
 
-const PAGE_SIZE = 9;
+const getPageSize = (viewportWidth) => {
+  if (viewportWidth <= 560) {
+    return 6;
+  }
+
+  if (viewportWidth <= 760) {
+    return 8;
+  }
+
+  if (viewportWidth <= 1180) {
+    return 9;
+  }
+
+  return 12;
+};
+
+const getColumnCount = (viewportWidth) => {
+  if (viewportWidth <= 560) {
+    return 1;
+  }
+
+  if (viewportWidth <= 760) {
+    return 2;
+  }
+
+  return 3;
+};
 
 const stageDisplayMap = {
   Wishlist: "Wishlist",
@@ -47,6 +73,21 @@ const getTimelineDateForStage = (job, stage) => {
     job.timeline.find((item) => item.label === `Moved to ${stage}`)?.date ?? ""
   );
 };
+
+function PipelineCardSkeleton({ count }) {
+  return Array.from({ length: count }, (_, index) => (
+    <article
+      key={`pipeline-skeleton-${index}`}
+      className="pipeline-card pipeline-card--grid pipeline-card--skeleton"
+      aria-hidden="true"
+    >
+      <div className="pipeline-skeleton pipeline-skeleton__row pipeline-skeleton__row--wide" />
+      <div className="pipeline-skeleton pipeline-skeleton__row" />
+      <div className="pipeline-skeleton pipeline-skeleton__row pipeline-skeleton__row--short" />
+      <div className="pipeline-skeleton pipeline-skeleton__button" />
+    </article>
+  ));
+}
 
 function PipelineCard({ job, onOpen }) {
   return (
@@ -206,9 +247,17 @@ export function PipelineBoard() {
   const dispatch = useDispatch();
   const jobs = useSelector(selectors.jobs);
   const selectedJob = useSelector(selectors.selectedJob);
+  const loadMoreRef = useRef(null);
+  const loadTimeoutRef = useRef(null);
   const [activeStage, setActiveStage] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [viewportWidth, setViewportWidth] = useState(() =>
+    typeof window === "undefined" ? 1280 : window.innerWidth,
+  );
+  const [visibleCount, setVisibleCount] = useState(() =>
+    getPageSize(typeof window === "undefined" ? 1280 : window.innerWidth),
+  );
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [note, setNote] = useState("");
 
   const stageCounts = useMemo(
@@ -237,11 +286,80 @@ export function PipelineBoard() {
   }, [activeStage, jobs, searchTerm]);
 
   useEffect(() => {
-    setVisibleCount(PAGE_SIZE);
-  }, [activeStage, searchTerm]);
+    const handleResize = () => {
+      setViewportWidth(window.innerWidth);
+    };
 
-  const visibleJobs = filteredJobs.slice(0, visibleCount);
-  const hasMore = visibleCount < filteredJobs.length;
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const pageSize = getPageSize(viewportWidth);
+  const skeletonCount = getColumnCount(viewportWidth);
+
+  useEffect(() => {
+    if (loadTimeoutRef.current) {
+      window.clearTimeout(loadTimeoutRef.current);
+      loadTimeoutRef.current = null;
+    }
+
+    setVisibleCount(pageSize);
+    setIsLoadingMore(false);
+  }, [activeStage, pageSize, searchTerm]);
+
+  useEffect(() => {
+    return () => {
+      if (loadTimeoutRef.current) {
+        window.clearTimeout(loadTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const effectiveVisibleCount = Math.min(visibleCount, filteredJobs.length);
+  const visibleJobs = filteredJobs.slice(0, effectiveVisibleCount);
+  const hasMore = effectiveVisibleCount < filteredJobs.length;
+
+  const loadNextBatch = () => {
+    if (!hasMore || isLoadingMore) {
+      return;
+    }
+
+    setIsLoadingMore(true);
+
+    if (loadTimeoutRef.current) {
+      window.clearTimeout(loadTimeoutRef.current);
+    }
+
+    loadTimeoutRef.current = window.setTimeout(() => {
+      setVisibleCount((current) =>
+        Math.min(current + pageSize, filteredJobs.length),
+      );
+      setIsLoadingMore(false);
+      loadTimeoutRef.current = null;
+    }, 450);
+  };
+
+  useEffect(() => {
+    if (!loadMoreRef.current || !hasMore) {
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          loadNextBatch();
+        }
+      },
+      {
+        rootMargin: "0px 0px 280px 0px",
+      },
+    );
+
+    observer.observe(loadMoreRef.current);
+
+    return () => observer.disconnect();
+  }, [hasMore, isLoadingMore, pageSize, filteredJobs.length]);
 
   const handleOpenDetails = (jobId) => {
     dispatch(jobActions.selectJob(jobId));
@@ -302,6 +420,13 @@ export function PipelineBoard() {
 
       <div className="pipeline-layout">
         <div className="pipeline-content">
+          <div className="pipeline-list-status">
+            <span>
+              Showing {visibleJobs.length} of {filteredJobs.length}
+            </span>
+            {isLoadingMore ? <strong>Loading more...</strong> : null}
+          </div>
+
           {visibleJobs.length ? (
             <div className="pipeline-grid">
               {visibleJobs.map((job) => (
@@ -311,6 +436,9 @@ export function PipelineBoard() {
                   onOpen={handleOpenDetails}
                 />
               ))}
+              {isLoadingMore ? (
+                <PipelineCardSkeleton count={skeletonCount} />
+              ) : null}
             </div>
           ) : (
             <div className="pipeline-empty">
@@ -320,15 +448,7 @@ export function PipelineBoard() {
             </div>
           )}
 
-          {hasMore ? (
-            <button
-              type="button"
-              className="pipeline-load-more"
-              onClick={() => setVisibleCount((current) => current + PAGE_SIZE)}
-            >
-              Load More
-            </button>
-          ) : null}
+          {hasMore ? <div ref={loadMoreRef} className="pipeline-scroll-sentinel" aria-hidden="true" /> : null}
         </div>
 
         <PipelineDetailPanel
