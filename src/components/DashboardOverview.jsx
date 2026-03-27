@@ -7,14 +7,6 @@ import { SectionCard } from "./SectionCard";
 
 const interviewStages = ["HR Screening", "Technical Interview", "Final Interview"];
 
-const formatInterviewDate = (value) =>
-  new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(value));
-
 export function DashboardOverview() {
   const dispatch = useDispatch();
   const jobs = useSelector(selectors.jobs);
@@ -60,11 +52,6 @@ export function DashboardOverview() {
       },
     ];
   }, [jobs]);
-
-  const upcomingInterviews = [...jobs]
-    .filter((job) => job.nextInterview)
-    .sort((a, b) => new Date(a.nextInterview) - new Date(b.nextInterview))
-    .slice(0, 3);
 
   const recentActivity = [...jobs]
     .flatMap((job) =>
@@ -122,35 +109,6 @@ export function DashboardOverview() {
             {metrics.map((metric) => (
               <MetricCard key={metric.label} {...metric} />
             ))}
-          </div>
-        </SectionCard>
-
-        <SectionCard
-          title="Upcoming Interviews"
-          eyebrow="Schedule"
-          className="dashboard-grid__interviews"
-        >
-          <div className="stack-list">
-            {upcomingInterviews.length ? (
-              upcomingInterviews.map((job) => (
-                <button
-                  key={job.id}
-                  type="button"
-                  className="list-item list-item--button"
-                  onClick={() => dispatch(jobActions.selectJob(job.id))}
-                >
-                  <div>
-                    <strong>{job.company}</strong>
-                    <p>{job.role}</p>
-                  </div>
-                  <span>{formatInterviewDate(job.nextInterview)}</span>
-                </button>
-              ))
-            ) : (
-              <p className="empty-state">
-                No interviews have been scheduled yet.
-              </p>
-            )}
           </div>
         </SectionCard>
 

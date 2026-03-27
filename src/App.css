@@ -40,12 +40,16 @@
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
   gap: 20px;
 }
 
 .dashboard-grid__overview {
-  grid-column: span 2;
+  min-width: 0;
+}
+
+.dashboard-grid__activity {
+  min-width: 0;
 }
 
 .metrics-grid {
