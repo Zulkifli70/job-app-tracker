@@ -64,7 +64,7 @@ function PipelineCard({ job, onOpen }) {
         </div>
         <h3>{job.role}</h3>
         <div className="pipeline-card__meta">
-          <span>Applied {formatDate(job.appliedOn)}</span>
+          <span>{formatDate(job.appliedOn)}</span>
         </div>
       </button>
       <button
@@ -72,7 +72,7 @@ function PipelineCard({ job, onOpen }) {
         className="primary-button pipeline-card__view"
         onClick={() => onOpen(job.id)}
       >
-        View Details
+        Details
       </button>
     </article>
   );

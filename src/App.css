@@ -402,14 +402,14 @@
 
 .pipeline-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .pipeline-card {
-  padding: 16px;
+  padding: 12px;
   min-width: 0;
-  border-radius: 20px;
+  border-radius: 18px;
   background: linear-gradient(180deg, #fefeff, #eef3fb);
   border: 1px solid rgba(67, 86, 129, 0.1);
   transition:
@@ -429,7 +429,7 @@
 
 .pipeline-card--grid {
   display: grid;
-  gap: 14px;
+  gap: 10px;
   align-content: start;
 }
 
@@ -453,14 +453,15 @@
   display: flex;
   align-items: start;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
 }
 
 .pipeline-card__topline strong {
   flex: 1;
   min-width: 0;
-  line-height: 1.35;
+  font-size: 0.9rem;
+  line-height: 1.3;
   overflow-wrap: anywhere;
 }
 
@@ -472,10 +473,10 @@
 }
 
 .pipeline-card h3 {
-  margin-top: 10px;
-  font-size: 1.02rem;
+  margin-top: 6px;
+  font-size: 0.95rem;
   color: #20324d;
-  line-height: 1.4;
+  line-height: 1.3;
   overflow-wrap: anywhere;
 }
 
@@ -483,19 +484,23 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
 .pipeline-card__meta span {
   color: #61718a;
-  font-size: 0.92rem;
+  font-size: 0.82rem;
 }
 
 .pipeline-card__view {
-  width: 100%;
+  width: fit-content;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 9px 12px;
+  border-radius: 12px;
+  font-size: 0.82rem;
+  justify-self: start;
 }
 
 .pipeline-empty {
@@ -778,9 +783,9 @@
   justify-content: center;
   width: fit-content;
   max-width: 100%;
-  padding: 9px 14px;
+  padding: 6px 10px;
   border-radius: 999px;
-  font-size: 0.82rem;
+  font-size: 0.72rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -827,7 +832,7 @@
   }
 
   .pipeline-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .dashboard-grid__overview,
@@ -877,7 +882,7 @@
   }
 
   .pipeline-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .pipeline-card__topline {
@@ -887,5 +892,11 @@
   .pipeline-card .status-pill,
   .pipeline-detail .status-pill {
     white-space: normal;
+  }
+}
+
+@media (max-width: 560px) {
+  .pipeline-grid {
+    grid-template-columns: 1fr;
   }
 }
