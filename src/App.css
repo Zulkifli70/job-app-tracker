@@ -11,9 +11,21 @@
   border: 1px solid rgba(67, 86, 129, 0.12);
   border-radius: 32px;
   background:
-    radial-gradient(circle at top right, rgba(247, 192, 124, 0.28), transparent 28%),
-    radial-gradient(circle at bottom left, rgba(88, 163, 255, 0.2), transparent 24%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(240, 245, 252, 0.88));
+    radial-gradient(
+      circle at top right,
+      rgba(247, 192, 124, 0.28),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at bottom left,
+      rgba(88, 163, 255, 0.2),
+      transparent 24%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.96),
+      rgba(240, 245, 252, 0.88)
+    );
   box-shadow: 0 24px 60px rgba(31, 45, 72, 0.12);
 }
 
@@ -86,8 +98,7 @@
   gap: 20px;
 }
 
-.dashboard-grid__overview,
-.dashboard-grid__form {
+.dashboard-grid__overview {
   grid-column: span 2;
 }
 
@@ -218,7 +229,9 @@
   border: 0;
   border-radius: 16px;
   cursor: pointer;
-  transition: transform 140ms ease, opacity 140ms ease;
+  transition:
+    transform 140ms ease,
+    opacity 140ms ease;
 }
 
 .primary-button {
@@ -230,6 +243,68 @@
 
 .quick-form__submit {
   width: fit-content;
+}
+
+.floating-add-button {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 30;
+  padding: 14px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #17315d, #345d9f);
+  color: #f4f7ff;
+  font-weight: 800;
+  box-shadow: 0 18px 34px rgba(23, 49, 93, 0.28);
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.floating-add-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 38px rgba(23, 49, 93, 0.32);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(14, 24, 43, 0.45);
+  backdrop-filter: blur(10px);
+}
+
+.modal-card {
+  width: min(760px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+}
+
+.modal-card__header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.modal-card__copy {
+  color: #60708a;
+}
+
+.modal-close-button {
+  padding: 10px 14px;
+  border: 1px solid rgba(67, 86, 129, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #20324d;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .primary-button:hover,
@@ -756,7 +831,7 @@
   }
 
   .dashboard-grid__overview,
-  .dashboard-grid__form {
+  .modal-card {
     grid-column: auto;
   }
 
@@ -776,6 +851,12 @@
     border-radius: 24px;
   }
 
+  .floating-add-button {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+
   .metrics-grid,
   .quick-form,
   .detail-stats,
@@ -786,7 +867,8 @@
 
   .details-heading,
   .pipeline-toolbar,
-  .pipeline-detail__header {
+  .pipeline-detail__header,
+  .modal-card__header {
     flex-direction: column;
   }
 

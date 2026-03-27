@@ -18,6 +18,7 @@ const formatInterviewDate = (value) =>
 export function DashboardOverview() {
   const dispatch = useDispatch();
   const jobs = useSelector(selectors.jobs);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     company: "",
     role: "",
@@ -106,200 +107,241 @@ export function DashboardOverview() {
       stage: "Wishlist",
       summary: "",
     });
+    setIsModalOpen(false);
   };
 
   return (
-    <div className="dashboard-grid">
-      <SectionCard
-        title="Overview"
-        eyebrow="Dashboard"
-        className="dashboard-grid__overview"
-      >
-        <div className="metrics-grid">
-          {metrics.map((metric) => (
-            <MetricCard key={metric.label} {...metric} />
-          ))}
-        </div>
-      </SectionCard>
+    <>
+      <div className="dashboard-grid">
+        <SectionCard
+          title="Overview"
+          eyebrow="Dashboard"
+          className="dashboard-grid__overview"
+        >
+          <div className="metrics-grid">
+            {metrics.map((metric) => (
+              <MetricCard key={metric.label} {...metric} />
+            ))}
+          </div>
+        </SectionCard>
 
-      <SectionCard
-        title="Upcoming Interviews"
-        eyebrow="Schedule"
-        className="dashboard-grid__interviews"
+        <SectionCard
+          title="Upcoming Interviews"
+          eyebrow="Schedule"
+          className="dashboard-grid__interviews"
+        >
+          <div className="stack-list">
+            {upcomingInterviews.length ? (
+              upcomingInterviews.map((job) => (
+                <button
+                  key={job.id}
+                  type="button"
+                  className="list-item list-item--button"
+                  onClick={() => dispatch(jobActions.selectJob(job.id))}
+                >
+                  <div>
+                    <strong>{job.company}</strong>
+                    <p>{job.role}</p>
+                  </div>
+                  <span>{formatInterviewDate(job.nextInterview)}</span>
+                </button>
+              ))
+            ) : (
+              <p className="empty-state">
+                No interviews have been scheduled yet.
+              </p>
+            )}
+          </div>
+        </SectionCard>
+
+        <SectionCard
+          title="Recent Activity"
+          eyebrow="Recent Updates"
+          className="dashboard-grid__activity"
+        >
+          <div className="stack-list">
+            {recentActivity.length ? (
+              recentActivity.map((item) => (
+                <div key={item.id} className="list-item">
+                  <div>
+                    <strong>{item.label}</strong>
+                    <p>
+                      {item.company} - {item.role}
+                    </p>
+                  </div>
+                  <span>{item.date}</span>
+                </div>
+              ))
+            ) : (
+              <p className="empty-state">
+                No activity has been recorded yet. Add your first application to
+                begin tracking your progress.
+              </p>
+            )}
+          </div>
+        </SectionCard>
+      </div>
+
+      <button
+        type="button"
+        className="floating-add-button"
+        onClick={() => setIsModalOpen(true)}
       >
-        <div className="stack-list">
-          {upcomingInterviews.length ? (
-            upcomingInterviews.map((job) => (
+        + Add Application
+      </button>
+
+      {isModalOpen ? (
+        <div
+          className="modal-backdrop"
+          role="presentation"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <SectionCard
+            title="Add New Application"
+            eyebrow="New Entry"
+            className="modal-card"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="modal-card__header">
+              <p className="modal-card__copy">
+                Save a new opportunity without leaving your dashboard flow.
+              </p>
               <button
-                key={job.id}
                 type="button"
-                className="list-item list-item--button"
-                onClick={() => dispatch(jobActions.selectJob(job.id))}
+                className="modal-close-button"
+                aria-label="Close add application modal"
+                onClick={() => setIsModalOpen(false)}
               >
-                <div>
-                  <strong>{job.company}</strong>
-                  <p>{job.role}</p>
-                </div>
-                <span>{formatInterviewDate(job.nextInterview)}</span>
+                Close
               </button>
-            ))
-          ) : (
-            <p className="empty-state">
-              No interviews have been scheduled yet.
-            </p>
-          )}
-        </div>
-      </SectionCard>
+            </div>
 
-      <SectionCard
-        title="Recent Activity"
-        eyebrow="Recent Updates"
-        className="dashboard-grid__activity"
-      >
-        <div className="stack-list">
-          {recentActivity.length ? (
-            recentActivity.map((item) => (
-              <div key={item.id} className="list-item">
-                <div>
-                  <strong>{item.label}</strong>
-                  <p>
-                    {item.company} - {item.role}
-                  </p>
-                </div>
-                <span>{item.date}</span>
-              </div>
-            ))
-          ) : (
-            <p className="empty-state">
-              No activity has been recorded yet. Add your first application to
-              begin tracking your progress.
-            </p>
-          )}
-        </div>
-      </SectionCard>
-
-      <SectionCard
-        title="Add New Application"
-        eyebrow="New Entry"
-        className="dashboard-grid__form"
-      >
-        <form className="quick-form" onSubmit={handleSubmit}>
-          <label>
-            Company
-            <input
-              value={formData.company}
-              onChange={(event) =>
-                setFormData((current) => ({
-                  ...current,
-                  company: event.target.value,
-                }))
-              }
-              placeholder="e.g. Google"
-            />
-          </label>
-          <label>
-            Role
-            <input
-              value={formData.role}
-              onChange={(event) =>
-                setFormData((current) => ({
-                  ...current,
-                  role: event.target.value,
-                }))
-              }
-              placeholder="e.g. Product Manager"
-            />
-          </label>
-          <label>
-            Location
-            <input
-              value={formData.location}
-              onChange={(event) =>
-                setFormData((current) => ({
-                  ...current,
-                  location: event.target.value,
-                }))
-              }
-              placeholder="e.g. Jakarta, Indonesia / Remote"
-            />
-          </label>
-          <label>
-            Salary
-            <input
-              value={formData.salary}
-              onChange={(event) =>
-                setFormData((current) => ({
-                  ...current,
-                  salary: event.target.value,
-                }))
-              }
-              placeholder="e.g. IDR 8,000,000 - 12,000,000"
-            />
-          </label>
-          <label>
-            Recruiter
-            <input
-              value={formData.recruiter}
-              onChange={(event) =>
-                setFormData((current) => ({
-                  ...current,
-                  recruiter: event.target.value,
-                }))
-              }
-              placeholder="e.g. Sarah Chen"
-            />
-          </label>
-          <label>
-            Contact Email
-            <input
-              type="email"
-              value={formData.contactEmail}
-              onChange={(event) =>
-                setFormData((current) => ({
-                  ...current,
-                  contactEmail: event.target.value,
-                }))
-              }
-              placeholder="e.g. recruiter@company.com"
-            />
-          </label>
-          <label>
-            Stage
-            <select
-              value={formData.stage}
-              onChange={(event) =>
-                setFormData((current) => ({
-                  ...current,
-                  stage: event.target.value,
-                }))
-              }
+            <form
+              className="quick-form"
+              onSubmit={handleSubmit}
+              onClick={(event) => event.stopPropagation()}
             >
-              {stages.map((stage) => (
-                <option key={stage} value={stage}>
-                  {stage}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="quick-form__full">
-            Notes
-            <textarea
-              rows="3"
-              value={formData.summary}
-              onChange={(event) =>
-                setFormData((current) => ({
-                  ...current,
-                  summary: event.target.value,
-                }))
-              }
-              placeholder="Add context, role highlights, or follow-up notes."
-            />
-          </label>
-          <button className="primary-button quick-form__submit" type="submit">
-            Save Application
-          </button>
-        </form>
-      </SectionCard>
-    </div>
+              <label>
+                Company
+                <input
+                  value={formData.company}
+                  onChange={(event) =>
+                    setFormData((current) => ({
+                      ...current,
+                      company: event.target.value,
+                    }))
+                  }
+                  placeholder="e.g. Google"
+                />
+              </label>
+              <label>
+                Role
+                <input
+                  value={formData.role}
+                  onChange={(event) =>
+                    setFormData((current) => ({
+                      ...current,
+                      role: event.target.value,
+                    }))
+                  }
+                  placeholder="e.g. Product Manager"
+                />
+              </label>
+              <label>
+                Location
+                <input
+                  value={formData.location}
+                  onChange={(event) =>
+                    setFormData((current) => ({
+                      ...current,
+                      location: event.target.value,
+                    }))
+                  }
+                  placeholder="e.g. Jakarta, Indonesia / Remote"
+                />
+              </label>
+              <label>
+                Salary
+                <input
+                  value={formData.salary}
+                  onChange={(event) =>
+                    setFormData((current) => ({
+                      ...current,
+                      salary: event.target.value,
+                    }))
+                  }
+                  placeholder="e.g. IDR 8,000,000 - 12,000,000"
+                />
+              </label>
+              <label>
+                Recruiter
+                <input
+                  value={formData.recruiter}
+                  onChange={(event) =>
+                    setFormData((current) => ({
+                      ...current,
+                      recruiter: event.target.value,
+                    }))
+                  }
+                  placeholder="e.g. Sarah Chen"
+                />
+              </label>
+              <label>
+                Contact Email
+                <input
+                  type="email"
+                  value={formData.contactEmail}
+                  onChange={(event) =>
+                    setFormData((current) => ({
+                      ...current,
+                      contactEmail: event.target.value,
+                    }))
+                  }
+                  placeholder="e.g. recruiter@company.com"
+                />
+              </label>
+              <label>
+                Stage
+                <select
+                  value={formData.stage}
+                  onChange={(event) =>
+                    setFormData((current) => ({
+                      ...current,
+                      stage: event.target.value,
+                    }))
+                  }
+                >
+                  {stages.map((stage) => (
+                    <option key={stage} value={stage}>
+                      {stage}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="quick-form__full">
+                Notes
+                <textarea
+                  rows="3"
+                  value={formData.summary}
+                  onChange={(event) =>
+                    setFormData((current) => ({
+                      ...current,
+                      summary: event.target.value,
+                    }))
+                  }
+                  placeholder="Add context, role highlights, or follow-up notes."
+                />
+              </label>
+              <button
+                className="primary-button quick-form__submit"
+                type="submit"
+              >
+                Save Application
+              </button>
+            </form>
+          </SectionCard>
+        </div>
+      ) : null}
+    </>
   );
 }

@@ -1,6 +1,18 @@
-export function SectionCard({ title, eyebrow, action, children, className = '', id }) {
+export function SectionCard({
+  title,
+  eyebrow,
+  action,
+  children,
+  className = "",
+  id,
+  ...props
+}) {
   return (
-    <section id={id} className={`section-card ${className}`.trim()}>
+    <section
+      id={id}
+      className={`section-card ${className}`.trim()}
+      {...props}
+    >
       <div className="section-card__header">
         <div>
           {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
@@ -10,5 +22,5 @@ export function SectionCard({ title, eyebrow, action, children, className = '', 
       </div>
       {children}
     </section>
-  )
+  );
 }

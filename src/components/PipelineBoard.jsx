@@ -7,7 +7,7 @@ import { SectionCard } from "./SectionCard";
 const PAGE_SIZE = 9;
 
 const stageDisplayMap = {
-  Wishlist: "Waitlist",
+  Wishlist: "Wishlist",
 };
 
 const formatDate = (value) => {
@@ -29,13 +29,16 @@ const getStageLabel = (stage) => stageDisplayMap[stage] ?? stage;
 
 const getTimelineDateForStage = (job, stage) => {
   if (stage === "Wishlist") {
-    const savedEvent = job.timeline.find((item) => item.label === "Saved role to wishlist");
+    const savedEvent = job.timeline.find(
+      (item) => item.label === "Saved role to wishlist",
+    );
     return savedEvent?.date ?? "";
   }
 
   if (stage === "Applied") {
     const appliedEvent = job.timeline.find(
-      (item) => item.label === "Added application" || item.label === "Moved to Applied",
+      (item) =>
+        item.label === "Added application" || item.label === "Moved to Applied",
     );
     return job.appliedOn || appliedEvent?.date || "";
   }
@@ -48,7 +51,11 @@ const getTimelineDateForStage = (job, stage) => {
 function PipelineCard({ job, onOpen }) {
   return (
     <article className="pipeline-card pipeline-card--grid">
-      <button type="button" className="pipeline-card__main" onClick={() => onOpen(job.id)}>
+      <button
+        type="button"
+        className="pipeline-card__main"
+        onClick={() => onOpen(job.id)}
+      >
         <div className="pipeline-card__topline">
           <strong>{job.company}</strong>
           <span className={`status-pill ${getStageClassName(job.stage)}`}>
@@ -60,7 +67,11 @@ function PipelineCard({ job, onOpen }) {
           <span>Applied {formatDate(job.appliedOn)}</span>
         </div>
       </button>
-      <button type="button" className="primary-button pipeline-card__view" onClick={() => onOpen(job.id)}>
+      <button
+        type="button"
+        className="primary-button pipeline-card__view"
+        onClick={() => onOpen(job.id)}
+      >
         View Details
       </button>
     </article>
@@ -132,7 +143,9 @@ function PipelineDetailPanel({ job, note, onNoteChange, onAddNote }) {
         </div>
         <div>
           <span>Status</span>
-          <strong>{["Rejected", "Ghosted"].includes(job.stage) ? job.stage : "Active"}</strong>
+          <strong>
+            {["Rejected", "Ghosted"].includes(job.stage) ? job.stage : "Active"}
+          </strong>
         </div>
       </div>
 
@@ -179,21 +192,10 @@ function PipelineDetailPanel({ job, note, onNoteChange, onAddNote }) {
               </article>
             ))
           ) : (
-            <p className="empty-state">No notes have been added to this application yet.</p>
+            <p className="empty-state">
+              No notes have been added to this application yet.
+            </p>
           )}
-        </div>
-      </div>
-
-      <div className="pipeline-detail__panel">
-        <h4>Additional Details</h4>
-        <p className="pipeline-detail__summary">{job.summary}</p>
-        <div className="timeline-list">
-          {job.timeline.map((item) => (
-            <div key={item.id} className="timeline-item">
-              <span>{formatDate(item.date)}</span>
-              <p>{item.label}</p>
-            </div>
-          ))}
         </div>
       </div>
     </aside>
@@ -211,7 +213,12 @@ export function PipelineBoard() {
 
   const stageCounts = useMemo(
     () =>
-      Object.fromEntries(stages.map((stage) => [stage, jobs.filter((job) => job.stage === stage).length])),
+      Object.fromEntries(
+        stages.map((stage) => [
+          stage,
+          jobs.filter((job) => job.stage === stage).length,
+        ]),
+      ),
     [jobs],
   );
 
@@ -269,7 +276,11 @@ export function PipelineBoard() {
         </div>
       </div>
 
-      <div className="pipeline-tabs" role="tablist" aria-label="Application stages">
+      <div
+        className="pipeline-tabs"
+        role="tablist"
+        aria-label="Application stages"
+      >
         <button
           type="button"
           className={`pipeline-tab${activeStage === "All" ? " pipeline-tab--active" : ""}`}
@@ -294,12 +305,18 @@ export function PipelineBoard() {
           {visibleJobs.length ? (
             <div className="pipeline-grid">
               {visibleJobs.map((job) => (
-                <PipelineCard key={job.id} job={job} onOpen={handleOpenDetails} />
+                <PipelineCard
+                  key={job.id}
+                  job={job}
+                  onOpen={handleOpenDetails}
+                />
               ))}
             </div>
           ) : (
             <div className="pipeline-empty">
-              <p className="empty-state">No applications match this stage and search combination.</p>
+              <p className="empty-state">
+                No applications match this stage and search combination.
+              </p>
             </div>
           )}
 
