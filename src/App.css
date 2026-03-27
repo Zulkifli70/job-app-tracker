@@ -3,70 +3,16 @@
   gap: 24px;
 }
 
-.hero {
-  display: grid;
-  grid-template-columns: minmax(0, 2.1fr) minmax(280px, 1fr);
-  gap: 24px;
-  padding: 32px;
-  border: 1px solid rgba(67, 86, 129, 0.12);
-  border-radius: 32px;
-  background:
-    radial-gradient(
-      circle at top right,
-      rgba(247, 192, 124, 0.28),
-      transparent 28%
-    ),
-    radial-gradient(
-      circle at bottom left,
-      rgba(88, 163, 255, 0.2),
-      transparent 24%
-    ),
-    linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.96),
-      rgba(240, 245, 252, 0.88)
-    );
-  box-shadow: 0 24px 60px rgba(31, 45, 72, 0.12);
+.app-header {
+  padding: 8px 4px 0;
 }
 
-.hero h1 {
-  max-width: 12ch;
-  margin-top: 12px;
-  font-size: clamp(2.4rem, 4vw, 4.4rem);
-  line-height: 0.96;
-  letter-spacing: -0.05em;
+.app-header h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
   color: #13233f;
-}
-
-.hero__copy {
-  max-width: 60ch;
-  margin-top: 18px;
-  font-size: 1.02rem;
-  color: #53627e;
-}
-
-.hero__panel {
-  align-self: end;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 24px;
-  min-height: 220px;
-  border-radius: 24px;
-  background: linear-gradient(180deg, #12213d, #203965);
-  color: #e8efff;
-}
-
-.hero__badge {
-  display: inline-flex;
-  width: fit-content;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  font-size: 0.76rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .section-card {
@@ -890,7 +836,6 @@
 @media (max-width: 1180px) {
   .dashboard-grid,
   .details-grid,
-  .hero,
   .pipeline-layout {
     grid-template-columns: 1fr;
   }
@@ -914,7 +859,6 @@
     padding: 16px;
   }
 
-  .hero,
   .section-card {
     padding: 18px;
     border-radius: 24px;
