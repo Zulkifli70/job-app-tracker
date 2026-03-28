@@ -714,6 +714,39 @@
   gap: 14px;
 }
 
+.pipeline-offer-summary {
+  display: grid;
+  gap: 14px;
+}
+
+.pipeline-offer-summary__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.pipeline-offer-summary__grid div {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: #f8faff;
+  border: 1px solid rgba(67, 86, 129, 0.08);
+}
+
+.pipeline-offer-summary__grid span {
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #66748e;
+}
+
+.pipeline-offer-summary__grid strong {
+  color: #11213d;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
 .details-grid__column {
   display: grid;
   gap: 16px;
@@ -886,7 +919,8 @@
   .detail-stats,
   .pipeline-detail__stats,
   .pipeline-detail__actions,
-  .pipeline-offer-form__row {
+  .pipeline-offer-form__row,
+  .pipeline-offer-summary__grid {
     grid-template-columns: 1fr;
   }
 

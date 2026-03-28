@@ -129,13 +129,135 @@ function PipelineCard({ job, onOpen }) {
   );
 }
 
-function PipelineDetailPanel({ job, note, onNoteChange, onAddNote }) {
-  const dispatch = useDispatch();
-  const [offerForm, setOfferForm] = useState(() => createOfferForm(job));
+function OfferDetailsModal({ job, offerForm, onChange, onClose, onSubmit }) {
+  if (!job) {
+    return null;
+  }
 
-  useEffect(() => {
-    setOfferForm(createOfferForm(job));
-  }, [job]);
+  return (
+    <div className="modal-backdrop" role="presentation" onClick={onClose}>
+      <SectionCard
+        title="Offer Details"
+        eyebrow="Offer Stage"
+        className="modal-card"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="modal-card__header">
+          <p className="modal-card__copy">
+            Record the important parts of this offer so it is easier to review
+            and compare later.
+          </p>
+          <button
+            type="button"
+            className="modal-close-button"
+            aria-label="Close offer details modal"
+            onClick={onClose}
+          >
+            Close
+          </button>
+        </div>
+
+        <form className="note-form pipeline-offer-form" onSubmit={onSubmit}>
+          <label>
+            Contract Type
+            <select
+              value={offerForm.contractType}
+              onChange={(event) => onChange("contractType", event.target.value)}
+            >
+              <option value="">Select contract type</option>
+              <option value="Permanent">Permanent</option>
+              <option value="Full-time">Full-time</option>
+              <option value="Part-time">Part-time</option>
+              <option value="Contract">Contract</option>
+              <option value="Internship">Internship</option>
+              <option value="Freelance">Freelance</option>
+            </select>
+          </label>
+
+          <div className="pipeline-offer-form__row">
+            <label>
+              Offered Salary
+              <input
+                value={offerForm.offeredSalary}
+                onChange={(event) => onChange("offeredSalary", event.target.value)}
+                placeholder="e.g. Rp 18.000.000"
+              />
+            </label>
+
+            <label>
+              Pay Period
+              <select
+                value={offerForm.payPeriod}
+                onChange={(event) => onChange("payPeriod", event.target.value)}
+              >
+                <option value="hourly">Hourly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+                <option value="project-based">Project-based</option>
+              </select>
+            </label>
+          </div>
+
+          <div className="pipeline-offer-form__row">
+            <label>
+              Work Model
+              <select
+                value={offerForm.workModel}
+                onChange={(event) => onChange("workModel", event.target.value)}
+              >
+                <option value="">Select work model</option>
+                <option value="On-site">On-site</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="Remote">Remote</option>
+              </select>
+            </label>
+
+            <label>
+              Start Date
+              <input
+                type="date"
+                value={offerForm.startDate}
+                onChange={(event) => onChange("startDate", event.target.value)}
+              />
+            </label>
+          </div>
+
+          <label>
+            Response Deadline
+            <input
+              type="date"
+              value={offerForm.responseDeadline}
+              onChange={(event) => onChange("responseDeadline", event.target.value)}
+            />
+          </label>
+
+          <label>
+            Benefits
+            <textarea
+              rows="4"
+              value={offerForm.benefits}
+              onChange={(event) => onChange("benefits", event.target.value)}
+              placeholder="Health insurance, THR, bonus, laptop, stock option, leave, etc."
+            />
+          </label>
+
+          <button className="primary-button" type="submit">
+            Save Offer Details
+          </button>
+        </form>
+      </SectionCard>
+    </div>
+  );
+}
+
+function PipelineDetailPanel({
+  job,
+  note,
+  onNoteChange,
+  onAddNote,
+  onOpenOfferModal,
+}) {
+  const dispatch = useDispatch();
 
   if (!job) {
     return (
@@ -149,10 +271,6 @@ function PipelineDetailPanel({ job, note, onNoteChange, onAddNote }) {
   }
 
   const currentStageIndex = stages.indexOf(job.stage);
-  const handleOfferSubmit = (event) => {
-    event.preventDefault();
-    dispatch(jobActions.updateOfferDetails(job.id, offerForm));
-  };
 
   return (
     <aside className="pipeline-detail">
@@ -233,129 +351,40 @@ function PipelineDetailPanel({ job, note, onNoteChange, onAddNote }) {
       <div className="pipeline-detail__panel">
         <h4>Offer Details</h4>
         {job.stage === "Offer" ? (
-          <form className="note-form pipeline-offer-form" onSubmit={handleOfferSubmit}>
-            <label>
-              Contract Type
-              <select
-                value={offerForm.contractType}
-                onChange={(event) =>
-                  setOfferForm((current) => ({
-                    ...current,
-                    contractType: event.target.value,
-                  }))
-                }
-              >
-                <option value="">Select contract type</option>
-                <option value="Permanent">Permanent</option>
-                <option value="Full-time">Full-time</option>
-                <option value="Part-time">Part-time</option>
-                <option value="Contract">Contract</option>
-                <option value="Internship">Internship</option>
-                <option value="Freelance">Freelance</option>
-              </select>
-            </label>
-
-            <div className="pipeline-offer-form__row">
-              <label>
-                Offered Salary
-                <input
-                  value={offerForm.offeredSalary}
-                  onChange={(event) =>
-                    setOfferForm((current) => ({
-                      ...current,
-                      offeredSalary: event.target.value,
-                    }))
-                  }
-                  placeholder="e.g. Rp 18.000.000"
-                />
-              </label>
-
-              <label>
-                Pay Period
-                <select
-                  value={offerForm.payPeriod}
-                  onChange={(event) =>
-                    setOfferForm((current) => ({
-                      ...current,
-                      payPeriod: event.target.value,
-                    }))
-                  }
-                >
-                  <option value="hourly">Hourly</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="yearly">Yearly</option>
-                  <option value="project-based">Project-based</option>
-                </select>
-              </label>
+          <div className="pipeline-offer-summary">
+            <div className="pipeline-offer-summary__grid">
+              <div>
+                <span>Contract Type</span>
+                <strong>{job.offerDetails?.contractType || "Not added"}</strong>
+              </div>
+              <div>
+                <span>Salary</span>
+                <strong>
+                  {job.offerDetails?.offeredSalary
+                    ? `${job.offerDetails.offeredSalary} / ${job.offerDetails.payPeriod}`
+                    : "Not added"}
+                </strong>
+              </div>
+              <div>
+                <span>Work Model</span>
+                <strong>{job.offerDetails?.workModel || "Not added"}</strong>
+              </div>
+              <div>
+                <span>Response Deadline</span>
+                <strong>{formatDate(job.offerDetails?.responseDeadline)}</strong>
+              </div>
             </div>
-
-            <div className="pipeline-offer-form__row">
-              <label>
-                Work Model
-                <select
-                  value={offerForm.workModel}
-                  onChange={(event) =>
-                    setOfferForm((current) => ({
-                      ...current,
-                      workModel: event.target.value,
-                    }))
-                  }
-                >
-                  <option value="">Select work model</option>
-                  <option value="On-site">On-site</option>
-                  <option value="Hybrid">Hybrid</option>
-                  <option value="Remote">Remote</option>
-                </select>
-              </label>
-
-              <label>
-                Start Date
-                <input
-                  type="date"
-                  value={offerForm.startDate}
-                  onChange={(event) =>
-                    setOfferForm((current) => ({
-                      ...current,
-                      startDate: event.target.value,
-                    }))
-                  }
-                />
-              </label>
-            </div>
-
-            <label>
-              Response Deadline
-              <input
-                type="date"
-                value={offerForm.responseDeadline}
-                onChange={(event) =>
-                  setOfferForm((current) => ({
-                    ...current,
-                    responseDeadline: event.target.value,
-                  }))
-                }
-              />
-            </label>
-
-            <label>
-              Benefits
-              <textarea
-                rows="4"
-                value={offerForm.benefits}
-                onChange={(event) =>
-                  setOfferForm((current) => ({
-                    ...current,
-                    benefits: event.target.value,
-                  }))
-                }
-                placeholder="Health insurance, THR, bonus, laptop, stock option, leave, etc."
-              />
-            </label>
-
-            <button className="primary-button" type="submit">
-              Save Offer Details
+            <p className="pipeline-detail__summary">
+              {job.offerDetails?.benefits || "No benefits have been recorded yet."}
+            </p>
+            <button
+              className="primary-button"
+              type="button"
+              onClick={onOpenOfferModal}
+            >
+              Edit Offer Details
             </button>
-          </form>
+          </div>
         ) : (
           <p className="empty-state">
             Move this application to <strong>Offer</strong> to record contract type,
@@ -402,6 +431,7 @@ export function PipelineBoard() {
   const selectedJob = useSelector(selectors.selectedJob);
   const loadMoreRef = useRef(null);
   const loadTimeoutRef = useRef(null);
+  const previousJobStageRef = useRef("");
   const [activeStage, setActiveStage] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [viewportWidth, setViewportWidth] = useState(() =>
@@ -412,6 +442,8 @@ export function PipelineBoard() {
   );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [note, setNote] = useState("");
+  const [offerForm, setOfferForm] = useState(() => createOfferForm(selectedJob));
+  const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
 
   const stageCounts = useMemo(
     () =>
@@ -468,6 +500,28 @@ export function PipelineBoard() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    setOfferForm(createOfferForm(selectedJob));
+  }, [selectedJob]);
+
+  useEffect(() => {
+    if (!selectedJob) {
+      previousJobStageRef.current = "";
+      setIsOfferModalOpen(false);
+      return;
+    }
+
+    const previousStage = previousJobStageRef.current;
+    const currentStage = selectedJob.stage;
+
+    if (previousStage && previousStage !== "Offer" && currentStage === "Offer") {
+      setOfferForm(createOfferForm(selectedJob));
+      setIsOfferModalOpen(true);
+    }
+
+    previousJobStageRef.current = currentStage;
+  }, [selectedJob]);
 
   const effectiveVisibleCount = Math.min(visibleCount, filteredJobs.length);
   const visibleJobs = filteredJobs.slice(0, effectiveVisibleCount);
@@ -527,6 +581,24 @@ export function PipelineBoard() {
 
     dispatch(jobActions.addNote(selectedJob.id, note.trim()));
     setNote("");
+  };
+
+  const handleOfferFormChange = (field, value) => {
+    setOfferForm((current) => ({
+      ...current,
+      [field]: value,
+    }));
+  };
+
+  const handleOfferSubmit = (event) => {
+    event.preventDefault();
+
+    if (!selectedJob) {
+      return;
+    }
+
+    dispatch(jobActions.updateOfferDetails(selectedJob.id, offerForm));
+    setIsOfferModalOpen(false);
   };
 
   return (
@@ -609,8 +681,19 @@ export function PipelineBoard() {
           note={note}
           onNoteChange={setNote}
           onAddNote={handleAddNote}
+          onOpenOfferModal={() => setIsOfferModalOpen(true)}
         />
       </div>
+
+      {isOfferModalOpen ? (
+        <OfferDetailsModal
+          job={selectedJob}
+          offerForm={offerForm}
+          onChange={handleOfferFormChange}
+          onClose={() => setIsOfferModalOpen(false)}
+          onSubmit={handleOfferSubmit}
+        />
+      ) : null}
     </SectionCard>
   );
 }
