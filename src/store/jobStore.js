@@ -23,6 +23,10 @@ const legacyStageMap = {
   Interview: "Technical Interview",
 };
 
+const activeStages = stages.filter(
+  (stage) => !["Rejected", "Ghosted"].includes(stage),
+);
+
 const normalizeStage = (stage) => {
   const mappedStage = legacyStageMap[stage] ?? stage;
   return stages.includes(mappedStage) ? mappedStage : "Wishlist";
@@ -111,12 +115,16 @@ const reducer = (state, action) => {
             return job;
           }
 
-          const currentIndex = stages.indexOf(job.stage);
+          const currentIndex = activeStages.indexOf(job.stage);
+          if (currentIndex === -1) {
+            return job;
+          }
+
           const nextIndex = Math.min(
             Math.max(currentIndex + direction, 0),
-            stages.length - 1,
+            activeStages.length - 1,
           );
-          const nextStage = stages[nextIndex];
+          const nextStage = activeStages[nextIndex];
 
           if (nextStage === job.stage) {
             return job;

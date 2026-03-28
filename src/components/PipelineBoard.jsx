@@ -36,6 +36,13 @@ const stageDisplayMap = {
   Wishlist: "Wishlist",
 };
 
+const timelineStages = stages.filter(
+  (stage) => !["Wishlist", "Rejected", "Ghosted"].includes(stage),
+);
+const activeStages = stages.filter(
+  (stage) => !["Rejected", "Ghosted"].includes(stage),
+);
+
 const formatDate = (value) => {
   if (!value) {
     return "Not set";
@@ -72,6 +79,32 @@ const getTimelineDateForStage = (job, stage) => {
   return (
     job.timeline.find((item) => item.label === `Moved to ${stage}`)?.date ?? ""
   );
+};
+
+const getLatestActiveStage = (job) => {
+  if (activeStages.includes(job.stage)) {
+    return job.stage;
+  }
+
+  for (const event of job.timeline) {
+    if (event.label === "Added application") {
+      return "Applied";
+    }
+
+    if (event.label === "Saved role to wishlist") {
+      return "Wishlist";
+    }
+
+    if (event.label.startsWith("Moved to ")) {
+      const stage = event.label.replace("Moved to ", "");
+
+      if (activeStages.includes(stage)) {
+        return stage;
+      }
+    }
+  }
+
+  return "Wishlist";
 };
 
 const createOfferForm = (job) => ({
@@ -270,7 +303,10 @@ function PipelineDetailPanel({
     );
   }
 
-  const currentStageIndex = stages.indexOf(job.stage);
+  const isTerminalStage = ["Rejected", "Ghosted"].includes(job.stage);
+  const currentStageIndex = activeStages.indexOf(job.stage);
+  const latestActiveStage = getLatestActiveStage(job);
+  const currentTimelineStageIndex = timelineStages.indexOf(latestActiveStage);
 
   return (
     <aside className="pipeline-detail">
@@ -291,7 +327,7 @@ function PipelineDetailPanel({
         <button
           type="button"
           className="pipeline-detail__stage-button"
-          disabled={currentStageIndex === 0}
+          disabled={isTerminalStage || currentStageIndex <= 0}
           onClick={() => dispatch(jobActions.moveJobStage(job.id, -1))}
         >
           Move Back
@@ -299,11 +335,44 @@ function PipelineDetailPanel({
         <button
           type="button"
           className="primary-button"
-          disabled={currentStageIndex === stages.length - 1}
+          disabled={
+            isTerminalStage || currentStageIndex === activeStages.length - 1
+          }
           onClick={() => dispatch(jobActions.moveJobStage(job.id, 1))}
         >
           Move Forward
         </button>
+      </div>
+
+      <div className="pipeline-detail__terminal-actions">
+        {isTerminalStage ? (
+          <button
+            type="button"
+            className="pipeline-detail__terminal-button"
+            onClick={() =>
+              dispatch(jobActions.updateJobStage(job.id, latestActiveStage))
+            }
+          >
+            Return to {latestActiveStage}
+          </button>
+        ) : (
+          <>
+            <button
+              type="button"
+              className="pipeline-detail__terminal-button"
+              onClick={() => dispatch(jobActions.updateJobStage(job.id, "Ghosted"))}
+            >
+              Mark as Ghosted
+            </button>
+            <button
+              type="button"
+              className="pipeline-detail__terminal-button pipeline-detail__terminal-button--danger"
+              onClick={() => dispatch(jobActions.updateJobStage(job.id, "Rejected"))}
+            >
+              Mark as Rejected
+            </button>
+          </>
+        )}
       </div>
 
       <div className="pipeline-detail__stats">
@@ -328,8 +397,8 @@ function PipelineDetailPanel({
       </div>
 
       <div className="pipeline-progress">
-        {stages.map((stage, index) => {
-          const isReached = index <= currentStageIndex;
+        {timelineStages.map((stage, index) => {
+          const isReached = index <= currentTimelineStageIndex;
           const isCurrent = stage === job.stage;
           const stageDate = getTimelineDateForStage(job, stage);
 
@@ -339,7 +408,7 @@ function PipelineDetailPanel({
               className={`pipeline-progress__item${isReached ? " pipeline-progress__item--reached" : ""}${isCurrent ? " pipeline-progress__item--current" : ""}`}
             >
               <div className="pipeline-progress__marker" />
-              <div>
+              <div className="pipeline-progress__content">
                 <strong>{getStageLabel(stage)}</strong>
                 <span>{stageDate ? formatDate(stageDate) : "Pending"}</span>
               </div>

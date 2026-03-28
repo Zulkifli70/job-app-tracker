@@ -598,6 +598,12 @@
   gap: 10px;
 }
 
+.pipeline-detail__terminal-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
 .pipeline-detail__stage-button {
   padding: 12px 14px;
   border: 0;
@@ -606,6 +612,32 @@
   color: #213250;
   font-weight: 700;
   cursor: pointer;
+}
+
+.pipeline-detail__terminal-button {
+  padding: 12px 14px;
+  border: 1px solid rgba(67, 86, 129, 0.14);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #213250;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    opacity 140ms ease,
+    background 140ms ease,
+    border-color 140ms ease;
+}
+
+.pipeline-detail__terminal-button:hover {
+  transform: translateY(-1px);
+  background: #f6f9ff;
+}
+
+.pipeline-detail__terminal-button--danger {
+  border-color: rgba(165, 54, 54, 0.2);
+  color: #8b2020;
+  background: #fff7f7;
 }
 
 .pipeline-detail__stage-button:disabled,
@@ -653,25 +685,48 @@
 
 .pipeline-progress {
   display: grid;
-  gap: 12px;
+  gap: 14px;
+  padding: 8px 0 2px;
 }
 
 .pipeline-progress__item {
   display: grid;
-  grid-template-columns: 22px minmax(0, 1fr);
-  gap: 12px;
-  align-items: center;
+  grid-template-columns: 20px minmax(0, 1fr);
+  column-gap: 14px;
+  align-items: start;
   color: #7b879a;
+  min-width: 0;
+  position: relative;
+  padding-bottom: 2px;
 }
 
 .pipeline-progress__item strong {
   display: block;
   color: inherit;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .pipeline-progress__item span {
   color: inherit;
-  font-size: 0.9rem;
+  display: block;
+  font-size: 0.82rem;
+  margin-top: 4px;
+  line-height: 1.35;
+}
+
+.pipeline-progress__content {
+  min-width: 0;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(67, 86, 129, 0.08);
+  box-shadow: 0 10px 24px rgba(34, 49, 77, 0.04);
+}
+
+.pipeline-progress__content strong,
+.pipeline-progress__content span {
+  text-wrap: balance;
 }
 
 .pipeline-progress__item--reached {
@@ -683,19 +738,58 @@
 }
 
 .pipeline-progress__marker {
-  width: 14px;
-  height: 14px;
+  width: 20px;
+  height: 20px;
   border-radius: 999px;
   background: #d9e2f2;
-  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.9);
+  border: 4px solid rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 0 0 1px rgba(120, 140, 172, 0.18),
+    0 10px 20px rgba(34, 49, 77, 0.08);
+  position: relative;
+  z-index: 1;
+  margin-top: 12px;
+}
+
+.pipeline-progress__item::after {
+  content: "";
+  position: absolute;
+  top: 38px;
+  left: 9px;
+  bottom: -14px;
+  width: 2px;
+  background: linear-gradient(180deg, #d9e2f2, rgba(217, 226, 242, 0));
+}
+
+.pipeline-progress__item:last-child::after {
+  display: none;
+}
+
+.pipeline-progress__item--reached::after {
+  background: linear-gradient(180deg, #78a7f2, rgba(120, 167, 242, 0.15));
 }
 
 .pipeline-progress__item--reached .pipeline-progress__marker {
   background: #78a7f2;
 }
 
+.pipeline-progress__item--reached .pipeline-progress__content {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), #eef5ff);
+  border-color: rgba(120, 167, 242, 0.24);
+}
+
 .pipeline-progress__item--current .pipeline-progress__marker {
   background: #17315d;
+  box-shadow:
+    0 0 0 1px rgba(23, 49, 93, 0.16),
+    0 0 0 8px rgba(52, 93, 159, 0.12),
+    0 12px 24px rgba(23, 49, 93, 0.14);
+}
+
+.pipeline-progress__item--current .pipeline-progress__content {
+  background: linear-gradient(180deg, #f8fbff, #e8f0ff);
+  border-color: rgba(52, 93, 159, 0.26);
+  box-shadow: 0 14px 28px rgba(23, 49, 93, 0.08);
 }
 
 .pipeline-detail__panel {
@@ -952,6 +1046,7 @@
   .pipeline-detail .status-pill {
     white-space: normal;
   }
+
 }
 
 @media (max-width: 560px) {
