@@ -7,6 +7,7 @@ const actionTypes = {
   moveJobStage: "jobs/moveJobStage",
   updateJobStage: "jobs/updateJobStage",
   updateJobMeta: "jobs/updateJobMeta",
+  updateOfferDetails: "jobs/updateOfferDetails",
   addNote: "jobs/addNote",
   addJob: "jobs/addJob",
   deleteJob: "jobs/deleteJob",
@@ -32,6 +33,15 @@ const normalizeJob = (job) => ({
   stage: normalizeStage(job.stage),
   recruiter: job.recruiter ?? "Pending",
   contactEmail: job.contactEmail ?? "",
+  offerDetails: {
+    contractType: job.offerDetails?.contractType ?? "",
+    offeredSalary: job.offerDetails?.offeredSalary ?? "",
+    payPeriod: job.offerDetails?.payPeriod ?? "monthly",
+    benefits: job.offerDetails?.benefits ?? "",
+    workModel: job.offerDetails?.workModel ?? "",
+    startDate: job.offerDetails?.startDate ?? "",
+    responseDeadline: job.offerDetails?.responseDeadline ?? "",
+  },
   notes: job.notes ?? [],
   documents: job.documents ?? [],
   timeline: job.timeline ?? [],
@@ -173,6 +183,41 @@ const reducer = (state, action) => {
       };
     }
 
+    case actionTypes.updateOfferDetails: {
+      const { jobId, offerDetails } = action.payload;
+
+      return {
+        ...state,
+        jobs: state.jobs.map((job) => {
+          if (job.id !== jobId) {
+            return job;
+          }
+
+          return {
+            ...job,
+            offerDetails: {
+              ...job.offerDetails,
+              contractType: offerDetails.contractType?.trim() ?? "",
+              offeredSalary: offerDetails.offeredSalary?.trim() ?? "",
+              payPeriod: offerDetails.payPeriod?.trim() ?? "monthly",
+              benefits: offerDetails.benefits?.trim() ?? "",
+              workModel: offerDetails.workModel?.trim() ?? "",
+              startDate: offerDetails.startDate ?? "",
+              responseDeadline: offerDetails.responseDeadline ?? "",
+            },
+            timeline: [
+              {
+                id: createId("event"),
+                date: new Date().toISOString().slice(0, 10),
+                label: "Updated offer details",
+              },
+              ...job.timeline,
+            ],
+          };
+        }),
+      };
+    }
+
     case actionTypes.addNote: {
       const { jobId, content } = action.payload;
 
@@ -231,6 +276,15 @@ const reducer = (state, action) => {
         nextInterview: "",
         recruiter: recruiter.trim() || "Pending",
         contactEmail: contactEmail.trim(),
+        offerDetails: {
+          contractType: "",
+          offeredSalary: "",
+          payPeriod: "monthly",
+          benefits: "",
+          workModel: "",
+          startDate: "",
+          responseDeadline: "",
+        },
         jobUrl: "",
         summary,
         notes: [],
@@ -303,6 +357,10 @@ export const jobActions = {
   updateJobMeta: (jobId, payload) => ({
     type: actionTypes.updateJobMeta,
     payload: { jobId, ...payload },
+  }),
+  updateOfferDetails: (jobId, offerDetails) => ({
+    type: actionTypes.updateOfferDetails,
+    payload: { jobId, offerDetails },
   }),
   addNote: (jobId, content) => ({
     type: actionTypes.addNote,
