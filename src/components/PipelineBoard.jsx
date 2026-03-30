@@ -60,6 +60,22 @@ const getStageClassName = (stage) =>
 
 const getStageLabel = (stage) => stageDisplayMap[stage] ?? stage;
 
+const getAdjacentStageButtonLabel = (jobStage, direction) => {
+  const currentStageIndex = activeStages.indexOf(jobStage);
+
+  if (currentStageIndex === -1) {
+    return direction < 0 ? "Move Back" : "Move Forward";
+  }
+
+  const nextStageIndex = currentStageIndex + direction;
+
+  if (nextStageIndex < 0 || nextStageIndex >= activeStages.length) {
+    return direction < 0 ? "Move Back" : "Move Forward";
+  }
+
+  return `Move to ${getStageLabel(activeStages[nextStageIndex])}`;
+};
+
 const getTimelineDateForStage = (job, stage) => {
   if (stage === "Wishlist") {
     const savedEvent = job.timeline.find(
@@ -307,6 +323,8 @@ function PipelineDetailPanel({
   const currentStageIndex = activeStages.indexOf(job.stage);
   const latestActiveStage = getLatestActiveStage(job);
   const currentTimelineStageIndex = timelineStages.indexOf(latestActiveStage);
+  const previousStageLabel = getAdjacentStageButtonLabel(job.stage, -1);
+  const nextStageLabel = getAdjacentStageButtonLabel(job.stage, 1);
 
   return (
     <aside className="pipeline-detail">
@@ -330,7 +348,7 @@ function PipelineDetailPanel({
           disabled={isTerminalStage || currentStageIndex <= 0}
           onClick={() => dispatch(jobActions.moveJobStage(job.id, -1))}
         >
-          Move Back
+          {previousStageLabel}
         </button>
         <button
           type="button"
@@ -340,7 +358,7 @@ function PipelineDetailPanel({
           }
           onClick={() => dispatch(jobActions.moveJobStage(job.id, 1))}
         >
-          Move Forward
+          {nextStageLabel}
         </button>
       </div>
 
