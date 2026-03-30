@@ -1,4 +1,6 @@
 export function Header({ theme, onToggleTheme }) {
+  const nextTheme = theme === 'light' ? 'dark' : 'light'
+
   return (
     <header className="app-header">
       <div>
@@ -9,9 +11,15 @@ export function Header({ theme, onToggleTheme }) {
         type="button"
         className="theme-toggle"
         onClick={onToggleTheme}
-        aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+        aria-label={`Switch to ${nextTheme} theme`}
+        title={`Switch to ${nextTheme} theme`}
       >
-        {theme === 'light' ? 'Dark mode' : 'Light mode'}
+        <img
+          className="theme-toggle__icon"
+          src={theme === 'light' ? '/moon.png' : '/sun.png'}
+          alt=""
+          aria-hidden="true"
+        />
       </button>
     </header>
   )

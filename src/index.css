@@ -52,6 +52,10 @@
   --status-rejected-text: #9e3842;
   --status-ghosted-bg: #eef1f6;
   --status-ghosted-text: #5f6b7d;
+  --theme-toggle-surface: rgba(255, 255, 255, 0.94);
+  --theme-toggle-border: rgba(67, 86, 129, 0.22);
+  --theme-toggle-shadow: 0 10px 24px rgba(23, 49, 93, 0.12);
+  --theme-toggle-icon-filter: none;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -106,6 +110,10 @@
   --status-rejected-text: #ffb8c2;
   --status-ghosted-bg: #202b39;
   --status-ghosted-text: #bfcbdb;
+  --theme-toggle-surface: linear-gradient(180deg, #1c3150, #13253d);
+  --theme-toggle-border: rgba(145, 185, 255, 0.36);
+  --theme-toggle-shadow: 0 12px 28px rgba(2, 8, 20, 0.42);
+  --theme-toggle-icon-filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(162, 202, 255, 0.24));
 }
 
 * {
