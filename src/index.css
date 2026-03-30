@@ -6,14 +6,106 @@
   line-height: 1.5;
   font-weight: 500;
   color: #44516a;
-  background:
+  --color-text: #44516a;
+  --color-heading: #11213d;
+  --color-heading-strong: #13233f;
+  --color-muted: #60708a;
+  --color-muted-soft: #66748e;
+  --color-surface: rgba(255, 255, 255, 0.78);
+  --color-surface-strong: rgba(255, 255, 255, 0.92);
+  --color-surface-elevated: #f8faff;
+  --color-surface-muted: #f6f8fc;
+  --color-surface-soft: #f9fbff;
+  --color-border: rgba(67, 86, 129, 0.1);
+  --color-border-strong: rgba(67, 86, 129, 0.14);
+  --color-shadow: rgba(33, 47, 74, 0.08);
+  --color-overlay: rgba(14, 24, 43, 0.45);
+  --color-primary: #17315d;
+  --color-primary-strong: #345d9f;
+  --color-primary-contrast: #f4f7ff;
+  --color-primary-soft: #dbe7f9;
+  --color-primary-soft-text: #213250;
+  --page-background:
     radial-gradient(circle at top left, rgba(105, 174, 255, 0.28), transparent 30%),
     radial-gradient(circle at right, rgba(126, 237, 202, 0.22), transparent 24%),
     linear-gradient(180deg, #edf4ff, #f7fafc 48%, #edf3fb);
+  --card-background: rgba(255, 255, 255, 0.78);
+  --card-shadow: 0 16px 50px rgba(33, 47, 74, 0.08);
+  --metric-default: linear-gradient(180deg, #f9fbff, #eef3fb);
+  --metric-highlight: linear-gradient(180deg, #edf7ff, #dcecff);
+  --metric-success: linear-gradient(180deg, #eefcf5, #dcf4e6);
+  --pipeline-card-background: linear-gradient(180deg, #fefeff, #eef3fb);
+  --pipeline-card-hover: linear-gradient(180deg, #ffffff, #e6eefb);
+  --panel-background: linear-gradient(180deg, #f9fbff, #eef3fb);
+  --progress-background: rgba(255, 255, 255, 0.78);
+  --progress-current-background: linear-gradient(180deg, #f8fbff, #e8f0ff);
+  --progress-reached-background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), #eef5ff);
+  --danger-surface: #fde9ea;
+  --danger-text: #9e3842;
+  --status-wishlist-bg: #e6edf9;
+  --status-wishlist-text: #25406d;
+  --status-interview-bg: #e4f3ff;
+  --status-interview-text: #0d5b88;
+  --status-offer-bg: #e7f8ee;
+  --status-offer-text: #12704a;
+  --status-rejected-bg: #fde9ea;
+  --status-rejected-text: #9e3842;
+  --status-ghosted-bg: #eef1f6;
+  --status-ghosted-text: #5f6b7d;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+[data-theme='dark'] {
+  color: #c5d1e6;
+  --color-text: #c5d1e6;
+  --color-heading: #f2f6ff;
+  --color-heading-strong: #f6f8ff;
+  --color-muted: #96a6c2;
+  --color-muted-soft: #8697b4;
+  --color-surface: rgba(15, 24, 42, 0.82);
+  --color-surface-strong: rgba(18, 28, 48, 0.96);
+  --color-surface-elevated: #18263e;
+  --color-surface-muted: #17243a;
+  --color-surface-soft: #122035;
+  --color-border: rgba(120, 145, 189, 0.2);
+  --color-border-strong: rgba(120, 145, 189, 0.28);
+  --color-shadow: rgba(3, 8, 19, 0.45);
+  --color-overlay: rgba(3, 9, 20, 0.62);
+  --color-primary: #7fb4ff;
+  --color-primary-strong: #4b86da;
+  --color-primary-contrast: #081324;
+  --color-primary-soft: #203453;
+  --color-primary-soft-text: #d9e8ff;
+  --page-background:
+    radial-gradient(circle at top left, rgba(43, 92, 173, 0.34), transparent 28%),
+    radial-gradient(circle at right, rgba(48, 146, 126, 0.22), transparent 26%),
+    linear-gradient(180deg, #07111f, #0b1628 46%, #0d1a2c);
+  --card-background: rgba(15, 24, 42, 0.82);
+  --card-shadow: 0 18px 50px rgba(3, 8, 19, 0.42);
+  --metric-default: linear-gradient(180deg, #16253d, #101b2d);
+  --metric-highlight: linear-gradient(180deg, #183252, #12243d);
+  --metric-success: linear-gradient(180deg, #143228, #0f241d);
+  --pipeline-card-background: linear-gradient(180deg, #152439, #101b2d);
+  --pipeline-card-hover: linear-gradient(180deg, #1b2e47, #14233a);
+  --panel-background: linear-gradient(180deg, #132138, #0f1a2c);
+  --progress-background: rgba(18, 29, 49, 0.88);
+  --progress-current-background: linear-gradient(180deg, #152b47, #122338);
+  --progress-reached-background: linear-gradient(180deg, rgba(27, 46, 72, 0.96), #12233b);
+  --danger-surface: #31171b;
+  --danger-text: #ffb7bf;
+  --status-wishlist-bg: #1f3250;
+  --status-wishlist-text: #b8d4ff;
+  --status-interview-bg: #14344a;
+  --status-interview-text: #9adfff;
+  --status-offer-bg: #153327;
+  --status-offer-text: #9ce6bb;
+  --status-rejected-bg: #381a20;
+  --status-rejected-text: #ffb8c2;
+  --status-ghosted-bg: #202b39;
+  --status-ghosted-text: #bfcbdb;
 }
 
 * {
@@ -27,6 +119,11 @@ html {
 body {
   margin: 0;
   min-width: 320px;
+  color: var(--color-text);
+  background: var(--page-background);
+  transition:
+    color 180ms ease,
+    background 180ms ease;
 }
 
 button,
@@ -61,4 +158,5 @@ p {
   letter-spacing: 0.12em;
   font-size: 0.72rem;
   font-weight: 800;
+  color: var(--color-muted-soft);
 }
