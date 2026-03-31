@@ -228,7 +228,9 @@ function OfferDetailsModal({ job, offerForm, onChange, onClose, onSubmit }) {
               Offered Salary
               <input
                 value={offerForm.offeredSalary}
-                onChange={(event) => onChange("offeredSalary", event.target.value)}
+                onChange={(event) =>
+                  onChange("offeredSalary", event.target.value)
+                }
                 placeholder="e.g. Rp 18.000.000"
               />
             </label>
@@ -276,7 +278,9 @@ function OfferDetailsModal({ job, offerForm, onChange, onClose, onSubmit }) {
             <input
               type="date"
               value={offerForm.responseDeadline}
-              onChange={(event) => onChange("responseDeadline", event.target.value)}
+              onChange={(event) =>
+                onChange("responseDeadline", event.target.value)
+              }
             />
           </label>
 
@@ -378,14 +382,18 @@ function PipelineDetailPanel({
             <button
               type="button"
               className="pipeline-detail__terminal-button"
-              onClick={() => dispatch(jobActions.updateJobStage(job.id, "Ghosted"))}
+              onClick={() =>
+                dispatch(jobActions.updateJobStage(job.id, "Ghosted"))
+              }
             >
               Mark as Ghosted
             </button>
             <button
               type="button"
               className="pipeline-detail__terminal-button pipeline-detail__terminal-button--danger"
-              onClick={() => dispatch(jobActions.updateJobStage(job.id, "Rejected"))}
+              onClick={() =>
+                dispatch(jobActions.updateJobStage(job.id, "Rejected"))
+              }
             >
               Mark as Rejected
             </button>
@@ -458,11 +466,14 @@ function PipelineDetailPanel({
               </div>
               <div>
                 <span>Response Deadline</span>
-                <strong>{formatDate(job.offerDetails?.responseDeadline)}</strong>
+                <strong>
+                  {formatDate(job.offerDetails?.responseDeadline)}
+                </strong>
               </div>
             </div>
             <p className="pipeline-detail__summary">
-              {job.offerDetails?.benefits || "No benefits have been recorded yet."}
+              {job.offerDetails?.benefits ||
+                "No benefits have been recorded yet."}
             </p>
             <button
               className="primary-button"
@@ -474,8 +485,8 @@ function PipelineDetailPanel({
           </div>
         ) : (
           <p className="empty-state">
-            Move this application to <strong>Offer</strong> to record contract type,
-            salary, benefits, deadline, and onboarding details.
+            Move this application to <strong>Offer</strong> to record contract
+            type, salary, benefits, deadline, and onboarding details.
           </p>
         )}
       </div>
@@ -529,7 +540,9 @@ export function PipelineBoard() {
   );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [note, setNote] = useState("");
-  const [offerForm, setOfferForm] = useState(() => createOfferForm(selectedJob));
+  const [offerForm, setOfferForm] = useState(() =>
+    createOfferForm(selectedJob),
+  );
   const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
 
   const stageCounts = useMemo(
@@ -602,7 +615,11 @@ export function PipelineBoard() {
     const previousStage = previousJobStageRef.current;
     const currentStage = selectedJob.stage;
 
-    if (previousStage && previousStage !== "Offer" && currentStage === "Offer") {
+    if (
+      previousStage &&
+      previousStage !== "Offer" &&
+      currentStage === "Offer"
+    ) {
       setOfferForm(createOfferForm(selectedJob));
       setIsOfferModalOpen(true);
     }
@@ -760,7 +777,13 @@ export function PipelineBoard() {
             </div>
           )}
 
-          {hasMore ? <div ref={loadMoreRef} className="pipeline-scroll-sentinel" aria-hidden="true" /> : null}
+          {hasMore ? (
+            <div
+              ref={loadMoreRef}
+              className="pipeline-scroll-sentinel"
+              aria-hidden="true"
+            />
+          ) : null}
         </div>
 
         <PipelineDetailPanel
